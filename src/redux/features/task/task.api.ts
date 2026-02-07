@@ -1,10 +1,11 @@
+import { taskStatus, type ITaskArr } from "@/interface-type/interfaceAndTypes";
 import { baseApi } from "../../baseApi";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createTask: builder.mutation({
       query: (data) => ({
-        url: "/task",
+        url: "/tasks",
         method: "POST",
         data: data,
       }),
@@ -12,20 +13,34 @@ export const authApi = baseApi.injectEndpoints({
     }),
     getAllTask: builder.query({
       query: () => ({
-        url: "/task",
+        url: "/tasks",
         method: "GET",
       }),
-      transformResponse: (response: any) => {
+      transformResponse: (response: { data: ITaskArr[] }) => {
         const tasks = response.data || [];
         return {
-          todo: tasks.filter((t: any) => t.status === "To-Do"),
-          inProgress: tasks.filter((t: any) => t.status === "In-Progress"),
-          done: tasks.filter((t: any) => t.status === "Done"),
+          todo: tasks.filter((t: ITaskArr) => t.status === taskStatus.ToDo),
+          inProgress: tasks.filter(
+            (t: ITaskArr) => t.status === taskStatus.InProgress,
+          ),
+          done: tasks.filter((t: ITaskArr) => t.status === taskStatus.Done),
         };
       },
       providesTags: ["task"],
     }),
+    updateTask: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/tasks/${id}/status`,
+        method: "PATCH",
+        data: data,
+      }),
+      invalidatesTags: ["task"],
+    }),
   }),
 });
 
-export const { useCreateTaskMutation, useGetAllTaskQuery } = authApi;
+export const {
+  useCreateTaskMutation,
+  useGetAllTaskQuery,
+  useUpdateTaskMutation,
+} = authApi;

@@ -3,6 +3,15 @@ interface ITask {
   description: string;
 }
 
+interface ITaskArr {
+  createdAt: string;
+  description: string;
+  status: string;
+  title: string;
+  updatedAt: string;
+  _id: string;
+}
+
 const taskStatus = {
   ToDo: "To-Do",
   InProgress: "In-Progress",
@@ -10,4 +19,4 @@ const taskStatus = {
 };
 
 export { taskStatus };
-export type { ITask };
+export type { ITask, ITaskArr };
