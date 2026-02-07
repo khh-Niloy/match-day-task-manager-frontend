@@ -1,75 +1,50 @@
-# React + TypeScript + Vite
+# Match Day Task Manager - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend of the Match Day Task Manager. It's a simple, drag-and-drop board to help you organize your tasks for match day.
 
-Currently, two official plugins are available:
+## How to Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1.  **Go to the frontend folder**:
 
-## React Compiler
+    ```bash
+    cd match-day-task-manager-frontend
+    ```
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+2.  **Install dependencies**:
 
-Note: This will impact Vite dev & build performances.
+    ```bash
+    npm install
+    ```
 
-## Expanding the ESLint configuration
+3.  **Setup environment variables**:
+    Create a `.env` file in the root of the frontend folder and add the backend API URL.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+    ```bash
+    VITE_BASE_URL=http://localhost:5000/api/v1
+    ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+4.  **Start the app**:
+    ```bash
+    npm run dev
+    ```
+    Open `http://localhost:5173` in your browser to see the app.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Decisions and Why
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Vite**: I used Vite because it's super fast for development. No one likes waiting for a slow build.
+- **Redux (RTK Query)**: I chose RTK Query for data fetching. It handles loading states and caching automatically, which saves a lot of manual work.
+- **Drag and Drop**: I used `@hello-pangea/dnd` for the Kanban board logic. It's reliable and makes the UI feel smooth.
+- **Tailwind CSS**: For styling, Tailwind is my go-to. It lets me build custom designs quickly without leaving the HTML.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Trade-offs
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Single Page MVP**: I kept everything on one page. It's fast and easy to use, but might need a better layout if we add more features like settings or profiles.
+- **Shadcn UI**: Used some pre-built components to keep the look professional while saving time on building buttons and forms from scratch.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## What's Missing / Incomplete
+
+- **Search and Filters**: You can't search for a specific task yet.
+- **Task Edits**: Users cannot update the title or description of a task after creating it.
+- **State Locking**: Once a task moves forward (e.g., to "In Progress"), it cannot be moved back to "Todo".
+- **Task Details**: There's no way to click on a task to see more details or add a long description.
+- **Mobile View**: The board works best on desktop. It might look a bit crowded on small phone screens.
