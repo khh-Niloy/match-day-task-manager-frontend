@@ -1,3 +1,4 @@
+import type { ITaskArr } from "@/interface-type/interfaceAndTypes";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 
 export const TaskCol = ({
@@ -7,7 +8,7 @@ export const TaskCol = ({
   status,
 }: {
   colName: string;
-  tasks: any[];
+  tasks: ITaskArr[];
   colColor: string;
   status: string;
 }) => {
@@ -31,7 +32,7 @@ export const TaskCol = ({
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {tasks?.map((task: any, index: number) => (
+            {tasks?.map((task: ITaskArr, index: number) => (
               <Draggable key={task._id} draggableId={task._id} index={index}>
                 {(provided) => (
                   <div

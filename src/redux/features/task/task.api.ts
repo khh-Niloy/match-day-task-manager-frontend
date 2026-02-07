@@ -1,4 +1,4 @@
-import { taskStatus } from "@/interface-type/interfaceAndTypes";
+import { taskStatus, type ITaskArr } from "@/interface-type/interfaceAndTypes";
 import { baseApi } from "../../baseApi";
 
 export const authApi = baseApi.injectEndpoints({
@@ -16,14 +16,14 @@ export const authApi = baseApi.injectEndpoints({
         url: "/tasks",
         method: "GET",
       }),
-      transformResponse: (response: any) => {
+      transformResponse: (response: { data: ITaskArr[] }) => {
         const tasks = response.data || [];
         return {
-          todo: tasks.filter((t: any) => t.status === taskStatus.ToDo),
+          todo: tasks.filter((t: ITaskArr) => t.status === taskStatus.ToDo),
           inProgress: tasks.filter(
-            (t: any) => t.status === taskStatus.InProgress,
+            (t: ITaskArr) => t.status === taskStatus.InProgress,
           ),
-          done: tasks.filter((t: any) => t.status === taskStatus.Done),
+          done: tasks.filter((t: ITaskArr) => t.status === taskStatus.Done),
         };
       },
       providesTags: ["task"],

@@ -1,26 +1,29 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldValues } from "react-hook-form";
 import { useCreateTaskMutation } from "@/redux/features/task/task.api";
 import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
 
 export const CreateTaskButton = () => {
+  const [open, setOpen] = useState(false);
   const [createTask] = useCreateTaskMutation();
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<FieldValues>();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FieldValues) => {
     try {
       await createTask(data).unwrap();
       toast.success("Task created successfully");
       reset();
+      setOpen(false);
     } catch (error: any) {
       toast.error(error?.data?.message || "Something went wrong");
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-[#5046E4] hover:bg-[#4338CA] text-white rounded-full px-6 py-5 transition-all duration-200 shadow-md hover:shadow-lg flex gap-2 border-none">
           <span className="font-medium">Create Task</span>
