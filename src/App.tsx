@@ -8,12 +8,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useForm, type FieldValues } from "react-hook-form";
-import { useCreateTaskMutation } from "./redux/features/task/task.api";
+import {
+  useCreateTaskMutation,
+  useGetAllTaskQuery,
+} from "./redux/features/task/task.api";
 import toast from "react-hot-toast";
+import { taskStatus } from "./interface-type/interfaceAndTypes";
 
 function App() {
   const { register, handleSubmit } = useForm();
   const [createTask] = useCreateTaskMutation();
+  const { data: tasks } = useGetAllTaskQuery(null);
+  const { todo, inProgress, done } = tasks || {
+    todo: [],
+    inProgress: [],
+    done: [],
+  };
+  console.log(todo);
 
   const onSubmit = async (data: FieldValues) => {
     const res = await createTask(data);
@@ -21,6 +32,10 @@ function App() {
     if (res.data) {
       toast.success("Task created successfully");
     }
+  };
+
+  const handleOnDragEnd = (e: any) => {
+    console.log(e);
   };
 
   return (
@@ -58,12 +73,9 @@ function App() {
           </DialogContent>
         </Dialog>
       </div>
+
       <div className="px-16">
-        <DragDropContext
-          onDragEnd={(e) => {
-            console.log(e);
-          }}
-        >
+        <DragDropContext onDragEnd={handleOnDragEnd}>
           <div className="w-full h-screen bg-white flex">
             <div className="w-full h-full bg-gray-100">
               <div className="p-4 bg-[#5046E4] text-white">To-Do</div>
@@ -74,72 +86,64 @@ function App() {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    <Draggable draggableId="todo-1" index={0}>
-                      {(provided) => (
-                        <div
-                          className="w-full h-16 bg-black"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          asd
-                        </div>
-                      )}
-                    </Draggable>
-                    <Draggable draggableId="todo-1" index={0}>
-                      {(provided) => (
-                        <div
-                          className="w-full h-16 bg-black"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          asd
-                        </div>
-                      )}
-                    </Draggable>
+                    {todo?.map((task: any, index: number) => (
+                      <Draggable
+                        key={task._id}
+                        draggableId={task._id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            className="w-full h-16 bg-orange-500"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            {task.title}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
                 )}
               </Droppable>
             </div>
+
             <div className="w-full h-full bg-gray-100">
-              <Droppable droppableId="doing">
+              <div className="p-4 bg-[#F59D0C] text-white">In Progress</div>
+              <Droppable droppableId="in-progress">
                 {(provided) => (
                   <div
                     className="flex flex-col gap-4"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    <Draggable draggableId="doing-1" index={0}>
-                      {(provided) => (
-                        <div
-                          className="w-full h-16 bg-green-500"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          asd
-                        </div>
-                      )}
-                    </Draggable>
-                    <Draggable draggableId="doing-2" index={1}>
-                      {(provided) => (
-                        <div
-                          className="w-full h-16 bg-green-500"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          asd
-                        </div>
-                      )}
-                    </Draggable>
+                    {inProgress?.map((task: any, index: number) => (
+                      <Draggable
+                        key={task._id}
+                        draggableId={task._id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            className="w-full h-16 bg-blue-500"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            {task.title}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
                     {provided.placeholder}
                   </div>
                 )}
               </Droppable>
             </div>
             <div className="w-full h-full bg-gray-100">
+              <div className="p-4 bg-[#23C660] text-white">Done</div>
               <Droppable droppableId="done">
                 {(provided) => (
                   <div
@@ -147,30 +151,24 @@ function App() {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    <Draggable draggableId="done-1" index={0}>
-                      {(provided) => (
-                        <div
-                          className="w-full h-16 bg-blue-500"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          asd
-                        </div>
-                      )}
-                    </Draggable>
-                    <Draggable draggableId="done-2" index={1}>
-                      {(provided) => (
-                        <div
-                          className="w-full h-16 bg-blue-500"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          asd
-                        </div>
-                      )}
-                    </Draggable>
+                    {done?.map((task: any, index: number) => (
+                      <Draggable
+                        key={task._id}
+                        draggableId={task._id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            className="w-full h-16 bg-orange-500"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            {task.title}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
                     {provided.placeholder}
                   </div>
                 )}
