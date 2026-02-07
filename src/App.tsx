@@ -11,6 +11,7 @@ import { useForm, type FieldValues } from "react-hook-form";
 import {
   useCreateTaskMutation,
   useGetAllTaskQuery,
+  useUpdateTaskMutation,
 } from "./redux/features/task/task.api";
 import toast from "react-hot-toast";
 import { taskStatus } from "./interface-type/interfaceAndTypes";
@@ -18,30 +19,48 @@ import { taskStatus } from "./interface-type/interfaceAndTypes";
 function App() {
   const { register, handleSubmit } = useForm();
   const [createTask] = useCreateTaskMutation();
+  const [updateTask] = useUpdateTaskMutation();
   const { data: tasks } = useGetAllTaskQuery(null);
   const { todo, inProgress, done } = tasks || {
     todo: [],
     inProgress: [],
     done: [],
   };
-  console.log(todo);
+  console.log(todo, inProgress, done);
 
   const onSubmit = async (data: FieldValues) => {
-    const res = await createTask(data);
+    const res = await createTask(data).unwrap();
     console.log(res);
     if (res.data) {
       toast.success("Task created successfully");
     }
   };
 
-  const handleOnDragEnd = (e: any) => {
-    console.log(e);
+  const handleOnDragEnd = async (e: any) => {
+    const { destination, draggableId } = e;
+    if (!destination) return;
+
+    try {
+      const res = await updateTask({
+        id: draggableId,
+        data: {
+          status: destination.droppableId,
+        },
+      }).unwrap();
+      console.log(res);
+      if (res.data) {
+        toast.success("Task updated successfully");
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.data.message);
+    }
   };
 
   return (
     <div>
-      <div className="w-full text-3xl font-bold text-center py-16 bg-[#FAFBFC]">
-        Test Match Day Task Manager
+      <div className="w-full text-3xl font-bold text-center pt-16 pb-12 bg-[#FAFBFC] font-semibold">
+        Match Day Task Manager
       </div>
 
       <div className="flex justify-end px-16 mb-4">
@@ -79,7 +98,7 @@ function App() {
           <div className="w-full h-screen bg-white flex">
             <div className="w-full h-full bg-gray-100">
               <div className="p-4 bg-[#5046E4] text-white">To-Do</div>
-              <Droppable droppableId="todo">
+              <Droppable droppableId={taskStatus.ToDo}>
                 {(provided) => (
                   <div
                     className="flex flex-col gap-4"
@@ -112,7 +131,7 @@ function App() {
 
             <div className="w-full h-full bg-gray-100">
               <div className="p-4 bg-[#F59D0C] text-white">In Progress</div>
-              <Droppable droppableId="in-progress">
+              <Droppable droppableId={taskStatus.InProgress}>
                 {(provided) => (
                   <div
                     className="flex flex-col gap-4"
@@ -144,7 +163,7 @@ function App() {
             </div>
             <div className="w-full h-full bg-gray-100">
               <div className="p-4 bg-[#23C660] text-white">Done</div>
-              <Droppable droppableId="done">
+              <Droppable droppableId={taskStatus.Done}>
                 {(provided) => (
                   <div
                     className="flex flex-col gap-4"
