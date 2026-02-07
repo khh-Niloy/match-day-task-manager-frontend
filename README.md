@@ -34,12 +34,12 @@ This is the frontend of the Match Day Task Manager. It's a simple, drag-and-drop
 - **Vite**: I used Vite because it's super fast for development. No one likes waiting for a slow build.
 - **Redux (RTK Query)**: I chose RTK Query for data fetching. It handles loading states and caching automatically, which saves a lot of manual work.
 - **Drag and Drop**: I used `@hello-pangea/dnd` for the Kanban board logic. It's reliable and makes the UI feel smooth.
-- **Tailwind CSS**: For styling, Tailwind is my go-to. It lets me build custom designs quickly without leaving the HTML.
+- **Tailwind CSS**: For styling, Tailwind is my go to. It lets me build custom designs quickly without leaving the HTML.
 
 ## Trade-offs
 
-- **Single Page MVP**: I kept everything on one page. It's fast and easy to use, but might need a better layout if we add more features like settings or profiles.
-- **Shadcn UI**: Used some pre-built components to keep the look professional while saving time on building buttons and forms from scratch.
+- **Prioritized Data Consistency**: I chose to wait for backend confirmation before updating the UI state. While this adds a slight latency, it ensures the task board always reflects the source of truth (DB) and avoids state desync.
+- **Desktop-First UX**: Since Kanban boards are most productive on larger screens, I focused on the desktop experience. A mobile-optimized responsive layout would be the next iteration.
 
 ## What's Missing / Incomplete
 
